@@ -57,38 +57,6 @@ struct Add2dKernel : Boilerplate {
   }
 };
 
-struct Fmla2dKernel : Boilerplate {
-
-  Fmla2dKernel(const std::size_t group_size) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      fmla(VReg(j).d, VReg(j).d, VReg(j).d);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
-struct Frintx2dKernel : Boilerplate {
-
-  Frintx2dKernel(const std::size_t group_size) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      frintx(VReg(j).d, VReg(j).d);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
 struct Mla4sKernel : Boilerplate {
 
   Mla4sKernel(const std::size_t group_size) {
@@ -99,6 +67,22 @@ struct Mla4sKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       mla(VReg(j).s, VReg(j).s, VReg(j).s);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Umlal2dKernel : Boilerplate {
+
+  Umlal2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      umlal(VReg(j).d, VReg(j).s2, VReg(j).s2);
     }
 
     Boilerplate::epilogue();
@@ -137,16 +121,112 @@ struct Sdot16bKernel : Boilerplate {
   }
 };
 
-struct Umlal2dKernel : Boilerplate {
+struct Fadd2dKernel : Boilerplate {
 
-  Umlal2dKernel(const std::size_t group_size) {
+  Fadd2dKernel(const std::size_t group_size) {
     using namespace Xbyak_aarch64;
 
     Boilerplate::prologue();
 
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
-      umlal(VReg(j).d, VReg(j).s2, VReg(j).s2);
+      fadd(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fmla2dKernel : Boilerplate {
+
+  Fmla2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fdiv2dKernel : Boilerplate {
+
+  Fdiv2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fdiv(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frintx2dKernel : Boilerplate {
+
+  Frintx2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frintx(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fsqrt2dKernel : Boilerplate {
+
+  Fsqrt2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fsqrt(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frsqrte2dKernel : Boilerplate {
+
+  Frsqrte2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frsqrte(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frecpe2dKernel : Boilerplate {
+
+  Frecpe2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frecpe(VReg(j).d, VReg(j).d);
     }
 
     Boilerplate::epilogue();
@@ -193,17 +273,28 @@ int main(int argc, char *argv[]) {
 
     benchmark::RegisterBenchmark("Add2d", benchmark_code<Add2dKernel>)
         ->Args(args);
-    benchmark::RegisterBenchmark("Fmla2d", benchmark_code<Fmla2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Frintx2d", benchmark_code<Frintx2dKernel>)
-        ->Args(args);
     benchmark::RegisterBenchmark("Mla4s", benchmark_code<Mla4sKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
         ->Args(args);
     benchmark::RegisterBenchmark("Pmul16b", benchmark_code<Pmul16bKernel>)
         ->Args(args);
     benchmark::RegisterBenchmark("Sdot16b", benchmark_code<Sdot16bKernel>)
         ->Args(args);
-    benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
+
+    benchmark::RegisterBenchmark("Fadd2d", benchmark_code<Fadd2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Fmla2d", benchmark_code<Fmla2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Fdiv2d", benchmark_code<Fdiv2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Frintx2d", benchmark_code<Frintx2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Fsqrt2d", benchmark_code<Fsqrt2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Frsqrte2d", benchmark_code<Frsqrte2dKernel>)
+        ->Args(args);
+    benchmark::RegisterBenchmark("Frecpe2d", benchmark_code<Frecpe2dKernel>)
         ->Args(args);
   }
 
