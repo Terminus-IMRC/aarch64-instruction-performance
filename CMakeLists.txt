@@ -20,7 +20,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(counters)
 
-find_package(benchmark REQUIRED)
+FetchContent_Declare(
+  benchmark
+  GIT_REPOSITORY https://github.com/google/benchmark
+  GIT_TAG v1.9.5
+)
+set(BENCHMARK_ENABLE_TESTING OFF CACHE INTERNAL "")
+FetchContent_MakeAvailable(benchmark)
 
 add_compile_options(-W -Wall -Wextra)
 
