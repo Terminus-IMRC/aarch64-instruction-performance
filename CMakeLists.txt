@@ -3,13 +3,20 @@ cmake_minimum_required(VERSION 3.14)
 
 project(aarch64-instruction-performance LANGUAGES CXX)
 
-include(CTest)
 include(FetchContent)
+
+FetchContent_Declare(
+  cpu_features
+  GIT_REPOSITORY https://github.com/google/cpu_features
+  GIT_TAG v0.11.0
+)
+FetchContent_MakeAvailable(cpu_features)
 
 FetchContent_Declare(
   xbyak_aarch64
   GIT_REPOSITORY https://github.com/fujitsu/xbyak_aarch64
-  GIT_TAG v1.1.3
+  # v1.3.0 as in commit message
+  GIT_TAG 3f8c682b9c6ff562dc008c7d1b8307a683f05d20
 )
 FetchContent_MakeAvailable(xbyak_aarch64)
 
@@ -32,3 +39,6 @@ add_compile_options(-W -Wall -Wextra)
 
 add_executable(benchmark-neon benchmark-neon.cpp)
 target_link_libraries(benchmark-neon PRIVATE xbyak_aarch64::xbyak_aarch64 counters::counters benchmark::benchmark)
+
+add_executable(benchmark-sve benchmark-sve.cpp)
+target_link_libraries(benchmark-sve PRIVATE CpuFeatures::cpu_features xbyak_aarch64::xbyak_aarch64 counters::counters benchmark::benchmark)
