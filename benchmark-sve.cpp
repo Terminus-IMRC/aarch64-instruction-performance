@@ -58,6 +58,22 @@ struct Boilerplate : Xbyak_aarch64::CodeGenerator {
   }
 };
 
+struct AddSKernel : Boilerplate {
+
+  AddSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      add(ZReg(j).s, ZReg(j).s, ZReg(j).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct AddDKernel : Boilerplate {
 
   AddDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -68,6 +84,22 @@ struct AddDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       add(ZReg(j).d, ZReg(j).d, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct MlaSKernel : Boilerplate {
+
+  MlaSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      mla(ZReg(j).s, p0 / T_z, ZReg(j).s, ZReg(j).s);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -90,6 +122,22 @@ struct MlaDKernel : Boilerplate {
   }
 };
 
+struct UmulhSKernel : Boilerplate {
+
+  UmulhSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      umulh(ZReg(j).s, ZReg(j).s, ZReg(j).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct UmulhDKernel : Boilerplate {
 
   UmulhDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -100,6 +148,22 @@ struct UmulhDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       umulh(ZReg(j).d, ZReg(j).d, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct UdivSKernel : Boilerplate {
+
+  UdivSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      udiv(ZReg(j).s, p0 / T_z, ZReg(j).s);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -138,6 +202,22 @@ struct UdotDKernel : Boilerplate {
   }
 };
 
+struct FaddSKernel : Boilerplate {
+
+  FaddSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fadd(ZReg(j).s, ZReg(j).s, ZReg(j).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct FaddDKernel : Boilerplate {
 
   FaddDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -148,6 +228,22 @@ struct FaddDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       fadd(ZReg(j).d, ZReg(j).d, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct FmlaSKernel : Boilerplate {
+
+  FmlaSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(ZReg(j).s, p0 / T_z, ZReg(j).s, ZReg(j).s);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -170,6 +266,22 @@ struct FmlaDKernel : Boilerplate {
   }
 };
 
+struct FdivSKernel : Boilerplate {
+
+  FdivSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fdiv(ZReg(j).s, p0 / T_z, ZReg(j).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct FdivDKernel : Boilerplate {
 
   FdivDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -180,6 +292,22 @@ struct FdivDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       fdiv(ZReg(j).d, p0 / T_z, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct FrintxSKernel : Boilerplate {
+
+  FrintxSKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frintx(ZReg(j).s, p0 / T_z, ZReg(j).s);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -312,7 +440,17 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
+    benchmark::RegisterBenchmark("AddS", benchmark_code<AddSKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("AddD", benchmark_code<AddDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("MlaS", benchmark_code<MlaSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
@@ -322,7 +460,17 @@ int main(int argc, char *argv[]) {
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("UmulhS", benchmark_code<UmulhSKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("UmulhD", benchmark_code<UmulhDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("UdivS", benchmark_code<UdivSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
@@ -338,7 +486,17 @@ int main(int argc, char *argv[]) {
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
 
+    benchmark::RegisterBenchmark("FaddS", benchmark_code<FaddSKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("FaddD", benchmark_code<FaddDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FmlaS", benchmark_code<FmlaSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
@@ -348,7 +506,17 @@ int main(int argc, char *argv[]) {
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FdivS", benchmark_code<FdivSKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("FdivD", benchmark_code<FdivDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FrintxS", benchmark_code<FrintxSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
