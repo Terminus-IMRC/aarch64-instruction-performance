@@ -41,9 +41,9 @@ struct Boilerplate : Xbyak_aarch64::CodeGenerator {
   }
 };
 
-template <std::size_t group_size> struct Add2dKernel : Boilerplate {
+struct Add2dKernel : Boilerplate {
 
-  Add2dKernel(void) {
+  Add2dKernel(const std::size_t group_size) {
     using namespace Xbyak_aarch64;
 
     Boilerplate::prologue();
@@ -57,41 +57,9 @@ template <std::size_t group_size> struct Add2dKernel : Boilerplate {
   }
 };
 
-template <std::size_t group_size> struct Fmla2dKernel : Boilerplate {
+struct Mla4sKernel : Boilerplate {
 
-  Fmla2dKernel(void) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      fmla(VReg(j).d, VReg(j).d, VReg(j).d);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
-template <std::size_t group_size> struct Frintx2dKernel : Boilerplate {
-
-  Frintx2dKernel(void) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      frintx(VReg(j).d, VReg(j).d);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
-template <std::size_t group_size> struct Mla4sKernel : Boilerplate {
-
-  Mla4sKernel(void) {
+  Mla4sKernel(const std::size_t group_size) {
     using namespace Xbyak_aarch64;
 
     Boilerplate::prologue();
@@ -105,41 +73,9 @@ template <std::size_t group_size> struct Mla4sKernel : Boilerplate {
   }
 };
 
-template <std::size_t group_size> struct Pmul16bKernel : Boilerplate {
+struct Umlal2dKernel : Boilerplate {
 
-  Pmul16bKernel(void) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      pmul(VReg(j).b, VReg(j).b, VReg(j).b);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
-template <std::size_t group_size> struct Sdot16bKernel : Boilerplate {
-
-  Sdot16bKernel(void) {
-    using namespace Xbyak_aarch64;
-
-    Boilerplate::prologue();
-
-    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
-      const std::size_t j = i % group_size;
-      sdot(VReg(j).s, VReg(j).b, VReg(j).b);
-    }
-
-    Boilerplate::epilogue();
-  }
-};
-
-template <std::size_t group_size> struct Umlal2dKernel : Boilerplate {
-
-  Umlal2dKernel(void) {
+  Umlal2dKernel(const std::size_t group_size) {
     using namespace Xbyak_aarch64;
 
     Boilerplate::prologue();
@@ -153,13 +89,158 @@ template <std::size_t group_size> struct Umlal2dKernel : Boilerplate {
   }
 };
 
+struct Pmul16bKernel : Boilerplate {
+
+  Pmul16bKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      pmul(VReg(j).b, VReg(j).b, VReg(j).b);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Sdot16bKernel : Boilerplate {
+
+  Sdot16bKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      sdot(VReg(j).s, VReg(j).b, VReg(j).b);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fadd2dKernel : Boilerplate {
+
+  Fadd2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fadd(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fmla2dKernel : Boilerplate {
+
+  Fmla2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fdiv2dKernel : Boilerplate {
+
+  Fdiv2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fdiv(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frintx2dKernel : Boilerplate {
+
+  Frintx2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frintx(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fsqrt2dKernel : Boilerplate {
+
+  Fsqrt2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fsqrt(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frsqrte2dKernel : Boilerplate {
+
+  Frsqrte2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frsqrte(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Frecpe2dKernel : Boilerplate {
+
+  Frecpe2dKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      frecpe(VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
 template <class code_type> static void benchmark_code(benchmark::State &state) {
-  code_type code;
+  const std::size_t group_size = state.range(0);
+  const std::uint64_t loop_count = state.range(1);
+
+  code_type code(group_size);
   code.ready();
   const auto function =
       code.template getCode<void (*)(std::uint64_t loop_count)>();
-
-  const std::uint64_t loop_count = state.range(0);
 
   if (state.thread_index() == 0) {
     collector.start();
@@ -173,6 +254,7 @@ template <class code_type> static void benchmark_code(benchmark::State &state) {
     const counters::event_count &count = collector.end();
 
     const std::uint64_t num_iterations = loop_count * state.iterations();
+    state.counters["group_size"] = group_size;
     state.counters["cycles_per_instruction"] =
         count.cycles() / (count.instructions() - 2. * num_iterations);
   }
@@ -184,6 +266,69 @@ int main(int argc, char *argv[]) {
   }
 
   benchmark::MaybeReenterWithoutASLR(argc, argv);
+
+  benchmark::RegisterBenchmark("Add2d", benchmark_code<Add2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Mla4s", benchmark_code<Mla4sKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Pmul16b", benchmark_code<Pmul16bKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Sdot16b", benchmark_code<Sdot16bKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+
+  benchmark::RegisterBenchmark("Fadd2d", benchmark_code<Fadd2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fmla2d", benchmark_code<Fmla2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fdiv2d", benchmark_code<Fdiv2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frintx2d", benchmark_code<Frintx2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fsqrt2d", benchmark_code<Fsqrt2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frsqrte2d", benchmark_code<Frsqrte2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frecpe2d", benchmark_code<Frecpe2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+
   benchmark::Initialize(&argc, argv);
   if (benchmark::ReportUnrecognizedArguments(argc, argv)) {
     return 1;
@@ -191,18 +336,3 @@ int main(int argc, char *argv[]) {
   benchmark::RunSpecifiedBenchmarks();
   benchmark::Shutdown();
 }
-
-BENCHMARK(benchmark_code<Add2dKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Add2dKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Fmla2dKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Fmla2dKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Frintx2dKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Frintx2dKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Mla4sKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Mla4sKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Pmul16bKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Pmul16bKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Sdot16bKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Sdot16bKernel<32>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Umlal2dKernel<1>>)->Arg(1e7);
-BENCHMARK(benchmark_code<Umlal2dKernel<32>>)->Arg(1e7);
