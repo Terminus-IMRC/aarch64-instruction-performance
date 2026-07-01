@@ -267,36 +267,67 @@ int main(int argc, char *argv[]) {
 
   benchmark::MaybeReenterWithoutASLR(argc, argv);
 
-  for (const std::size_t group_size : {1, 32}) {
-    const std::vector<std::int64_t> args{static_cast<std::int64_t>(group_size),
-                                         static_cast<std::int64_t>(1e7)};
+  benchmark::RegisterBenchmark("Add2d", benchmark_code<Add2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Mla4s", benchmark_code<Mla4sKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Pmul16b", benchmark_code<Pmul16bKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Sdot16b", benchmark_code<Sdot16bKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
 
-    benchmark::RegisterBenchmark("Add2d", benchmark_code<Add2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Mla4s", benchmark_code<Mla4sKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Pmul16b", benchmark_code<Pmul16bKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Sdot16b", benchmark_code<Sdot16bKernel>)
-        ->Args(args);
-
-    benchmark::RegisterBenchmark("Fadd2d", benchmark_code<Fadd2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Fmla2d", benchmark_code<Fmla2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Fdiv2d", benchmark_code<Fdiv2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Frintx2d", benchmark_code<Frintx2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Fsqrt2d", benchmark_code<Fsqrt2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Frsqrte2d", benchmark_code<Frsqrte2dKernel>)
-        ->Args(args);
-    benchmark::RegisterBenchmark("Frecpe2d", benchmark_code<Frecpe2dKernel>)
-        ->Args(args);
-  }
+  benchmark::RegisterBenchmark("Fadd2d", benchmark_code<Fadd2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fmla2d", benchmark_code<Fmla2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fdiv2d", benchmark_code<Fdiv2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frintx2d", benchmark_code<Frintx2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fsqrt2d", benchmark_code<Fsqrt2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frsqrte2d", benchmark_code<Frsqrte2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Frecpe2d", benchmark_code<Frecpe2dKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({32, 10'000'000});
 
   benchmark::Initialize(&argc, argv);
   if (benchmark::ReportUnrecognizedArguments(argc, argv)) {
