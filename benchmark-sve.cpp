@@ -106,6 +106,22 @@ struct MlaSKernel : Boilerplate {
   }
 };
 
+struct MlaSLaggedKernel : Boilerplate {
+
+  MlaSLaggedKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      mla(ZReg(2 * j + 0).s, p0 / T_z, ZReg(2 * j + 1).s, ZReg(2 * j + 1).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct MlaDKernel : Boilerplate {
 
   MlaDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -116,6 +132,22 @@ struct MlaDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       mla(ZReg(j).d, p0 / T_z, ZReg(j).d, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct MlaDLaggedKernel : Boilerplate {
+
+  MlaDLaggedKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      mla(ZReg(2 * j + 0).d, p0 / T_z, ZReg(2 * j + 1).d, ZReg(2 * j + 1).d);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -250,6 +282,22 @@ struct FmlaSKernel : Boilerplate {
   }
 };
 
+struct FmlaSLaggedKernel : Boilerplate {
+
+  FmlaSLaggedKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(ZReg(2 * j + 0).s, p0 / T_z, ZReg(2 * j + 1).s, ZReg(2 * j + 1).s);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
 struct FmlaDKernel : Boilerplate {
 
   FmlaDKernel(const std::size_t group_size, const bool is_streaming) {
@@ -260,6 +308,22 @@ struct FmlaDKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       fmla(ZReg(j).d, p0 / T_z, ZReg(j).d, ZReg(j).d);
+    }
+
+    Boilerplate::epilogue(is_streaming);
+  }
+};
+
+struct FmlaDLaggedKernel : Boilerplate {
+
+  FmlaDLaggedKernel(const std::size_t group_size, const bool is_streaming) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue(is_streaming);
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(ZReg(2 * j + 0).d, p0 / T_z, ZReg(2 * j + 1).d, ZReg(2 * j + 1).d);
     }
 
     Boilerplate::epilogue(is_streaming);
@@ -455,11 +519,21 @@ int main(int argc, char *argv[]) {
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("MlaSLagged", benchmark_code<MlaSLaggedKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({16, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("MlaD", benchmark_code<MlaDKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("MlaDLagged", benchmark_code<MlaDLaggedKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({16, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("UmulhS", benchmark_code<UmulhSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
@@ -501,11 +575,23 @@ int main(int argc, char *argv[]) {
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FmlaSLagged",
+                                 benchmark_code<FmlaSLaggedKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({16, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("FmlaD", benchmark_code<FmlaDKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
         ->Args({4, is_streaming, 1'000'000})
         ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FmlaDLagged",
+                                 benchmark_code<FmlaDLaggedKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({16, is_streaming, 1'000'000});
     benchmark::RegisterBenchmark("FdivS", benchmark_code<FdivSKernel>)
         ->Args({1, is_streaming, 1'000'000})
         ->Args({2, is_streaming, 1'000'000})
