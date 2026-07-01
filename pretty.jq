@@ -1,3 +1,5 @@
+#!/usr/bin/env jq -r -f
+
 .benchmarks[]
 | [
     (.name | split("/")[0]),

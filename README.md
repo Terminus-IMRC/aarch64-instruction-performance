@@ -12,7 +12,7 @@
 Use the [pretty.jq](pretty.jq) script to pretty-print the JSON result files, e.g.:
 
 ```console
-$ jq -r -f pretty.jq results/Azure-Cobalt-100_SVE.json
+$ ./pretty.jq results/Azure-Cobalt-100_SVE.json
 AddS    1       2
 AddS    2       1
 AddS    4       0.5
@@ -23,7 +23,7 @@ AddD    4       0.5
 AddD    32      0.5
 ...
 
-$ diff --side-by-side --suppress-common-lines <(jq -r -f pretty.jq results/AWS-Graviton3_SVE.json) <(jq -r -f pretty.jq results/AWS-Graviton3E_SVE.json) | awk '{ printf("%-15s %2d: %3.2f -> %3.2f\n", $1, $2, $3, $7) }'
+$ diff --side-by-side --suppress-common-lines <(./pretty.jq results/AWS-Graviton3_SVE.json) <(./pretty.jq results/AWS-Graviton3E_SVE.json) | awk '{ printf("%-15s %2d: %3.2f -> %3.2f\n", $1, $2, $3, $7) }'
 AddS             4: 0.56 -> 0.50
 AddS            32: 0.56 -> 0.50
 AddD             4: 0.56 -> 0.50
