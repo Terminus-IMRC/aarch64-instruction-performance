@@ -312,37 +312,67 @@ int main(int argc, char *argv[]) {
       continue;
     }
 
-    for (const std::size_t group_size : {1, 32}) {
-      const std::vector<std::int64_t> args{
-          static_cast<std::int64_t>(group_size), is_streaming,
-          static_cast<std::int64_t>(1e7)};
+    benchmark::RegisterBenchmark("AddD", benchmark_code<AddDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("MlaD", benchmark_code<MlaDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("UmulhD", benchmark_code<UmulhDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("UdivD", benchmark_code<UdivDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("UdotD", benchmark_code<UdotDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
 
-      benchmark::RegisterBenchmark("AddD", benchmark_code<AddDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("MlaD", benchmark_code<MlaDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("UmulhD", benchmark_code<UmulhDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("UdivD", benchmark_code<UdivDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("UdotD", benchmark_code<UdotDKernel>)
-          ->Args(args);
-
-      benchmark::RegisterBenchmark("FaddD", benchmark_code<FaddDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FmlaD", benchmark_code<FmlaDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FdivD", benchmark_code<FdivDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FrintxD", benchmark_code<FrintxDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FsqrtD", benchmark_code<FsqrtDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FrsqrteD", benchmark_code<FrsqrteDKernel>)
-          ->Args(args);
-      benchmark::RegisterBenchmark("FrecpeD", benchmark_code<FrecpeDKernel>)
-          ->Args(args);
-    }
+    benchmark::RegisterBenchmark("FaddD", benchmark_code<FaddDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FmlaD", benchmark_code<FmlaDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FdivD", benchmark_code<FdivDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FrintxD", benchmark_code<FrintxDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FsqrtD", benchmark_code<FsqrtDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FrsqrteD", benchmark_code<FrsqrteDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
+    benchmark::RegisterBenchmark("FrecpeD", benchmark_code<FrecpeDKernel>)
+        ->Args({1, is_streaming, 1'000'000})
+        ->Args({2, is_streaming, 1'000'000})
+        ->Args({4, is_streaming, 1'000'000})
+        ->Args({32, is_streaming, 1'000'000});
   }
 
   benchmark::Initialize(&argc, argv);
