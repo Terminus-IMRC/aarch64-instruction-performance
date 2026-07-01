@@ -73,6 +73,22 @@ struct Mla4sKernel : Boilerplate {
   }
 };
 
+struct Mla4sLaggedKernel : Boilerplate {
+
+  Mla4sLaggedKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      mla(VReg(2 * j + 0).s, VReg(2 * j + 1).s, VReg(2 * j + 1).s);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
 struct Umlal2dKernel : Boilerplate {
 
   Umlal2dKernel(const std::size_t group_size) {
@@ -131,6 +147,22 @@ struct Fadd2dKernel : Boilerplate {
     for (std::size_t i = 0; i < 32 / group_size * group_size; ++i) {
       const std::size_t j = i % group_size;
       fadd(VReg(j).d, VReg(j).d, VReg(j).d);
+    }
+
+    Boilerplate::epilogue();
+  }
+};
+
+struct Fmla2dLaggedKernel : Boilerplate {
+
+  Fmla2dLaggedKernel(const std::size_t group_size) {
+    using namespace Xbyak_aarch64;
+
+    Boilerplate::prologue();
+
+    for (std::size_t i = 0; i < 16 / group_size * group_size; ++i) {
+      const std::size_t j = i % group_size;
+      fmla(VReg(2 * j + 0).d, VReg(2 * j + 1).d, VReg(2 * j + 1).d);
     }
 
     Boilerplate::epilogue();
@@ -277,6 +309,11 @@ int main(int argc, char *argv[]) {
       ->Args({2, 10'000'000})
       ->Args({4, 10'000'000})
       ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Mla4sLagged", benchmark_code<Mla4sLaggedKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({16, 10'000'000});
   benchmark::RegisterBenchmark("Umlal2d", benchmark_code<Umlal2dKernel>)
       ->Args({1, 10'000'000})
       ->Args({2, 10'000'000})
@@ -303,6 +340,12 @@ int main(int argc, char *argv[]) {
       ->Args({2, 10'000'000})
       ->Args({4, 10'000'000})
       ->Args({32, 10'000'000});
+  benchmark::RegisterBenchmark("Fmla2dLagged",
+                               benchmark_code<Fmla2dLaggedKernel>)
+      ->Args({1, 10'000'000})
+      ->Args({2, 10'000'000})
+      ->Args({4, 10'000'000})
+      ->Args({16, 10'000'000});
   benchmark::RegisterBenchmark("Fdiv2d", benchmark_code<Fdiv2dKernel>)
       ->Args({1, 10'000'000})
       ->Args({2, 10'000'000})
